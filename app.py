@@ -6,6 +6,7 @@ import os
 from time import sleep
 import json
 import gunicorn
+from markupsafe import escape
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/uploads"
@@ -52,8 +53,4 @@ def add():
 
 
 if __name__ == "__main__":
-    try:
-        app.run(debug=True)
-    except KeyboardInterrupt:
-        scheduler.kill_thread()
-        print("Stopped")
+    app.run(debug=True)

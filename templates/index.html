@@ -1,0 +1,72 @@
+<html>
+
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static',filename='css/main.css')}}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+        <title> Autotests </title>
+    </head>
+
+    <body>
+        {% if message %}
+        <div class="msg">{{message}}</div>
+        {% endif %}
+        <main>
+            <div class="form">
+                <h1>Call Scheduler</h1>
+                <p id="errors"></p>
+                <form action="/" method="POST" enctype="multipart/form-data">
+                    <div class="column">
+                        <label for="name">Description</label>
+                        <input type="text" name="name" id="name" required placeholder="12 Teknosa calls to Mitya">
+
+
+                        <label for="username">Email</label>
+                        <input type="text" name="username" id="username" required placeholder="email@voctiv.com">
+
+                        <label for="pass">Password</label>
+                        <input type="password" name="password" id="password" required placeholder="*****">
+                    </div>
+                    <div class="sperator"></div>
+                    <div class="column">
+                        <label for="uuid">Agent UUID</label>
+                        <input type="text" name="uuid" id="uuid" required placeholder="UUID from agent settings">
+                        
+                        <div class="number">
+                            <label for="count">Number of calls</label>
+                            <input type="number" name="count" id="count" required placeholder="10">
+                            <label for="interval">Delay between calls</label>
+                            <input type="Number" name="interval" id="interval" required placeholder="In minutes">
+                        </div>
+
+                        <label for="sheet">Boot file</label>
+                        <input type="file" name="sheet" id="sheet" accept=".xls,.xlsx,.csv" required>
+                    </div>
+                
+
+                    <button type="submit" value="CREATE" name="CREATE">Create Task</button>
+                    <!-- <button type="button" value="refresh" onClick="refresh()">Refresh</button> -->
+                    <a href="/">Refresh </a>
+                </form>
+            </div>
+            <div class="job" id="jobdiv">
+                {% for job in jobs%}
+                <div class="job-item" id={{job.name}}>
+                    <div class="job-content">
+                        <h5>{{job.name}}</h5>
+                        <p>{{job.call_count}}/{{job.total_call_count}} calls complete</p>
+                    </div>
+                    <div class="job-button">
+                            <button id = {{job.name}} class="delete">Delete</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+        <script src="{{ url_for('static', filename='js/ajs.js') }}"></script>
+        
+        
+    </body>
+
+</html>

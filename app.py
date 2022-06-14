@@ -10,8 +10,6 @@ app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/uploads"
 scheduler = Scheduler()
 scheduler.start()
-login = "hamer_api@voctiv.net"
-password = "xATL6Qgh"
 
 @app.route("/", methods=["POST","GET"])
 def index():

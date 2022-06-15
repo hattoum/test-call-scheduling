@@ -43,6 +43,7 @@ def add_dialog(uuid: str, body: dict, auth_data: dict):
 def refresh_token(username: str, password: str, auth_data: dict):
     refresh_url = "https://cms-v3.voctiv.com/api/v2/ext/auth/refresh"
     refresh_body = {"refresh_token":auth_data["refresh_token"]}
+    print(f"Refresh body: {refresh_body}")
     refresh_post = requests.post(refresh_url,auth=HTTPBasicAuth(username,password),json=refresh_body)
     try:
         refresh_data = refresh_post.json()

@@ -20,7 +20,7 @@ class Job:
     auth_data: dict
     uuid: str
     call_count: int = 1
-    refresh_interval: int = 10  
+    refresh_interval: int = 1  
 
 class Scheduler(threading.Thread):
     def __init__(self) -> None:
@@ -68,6 +68,8 @@ class Scheduler(threading.Thread):
     def remove_job(self, job: Job):
         try:
             self.jobs.remove(job)
+            print(f"{job.name} has been removed")
+            print{f"# active jobs: {len(self.jobs)}"}
             return(f"{job.name} is done")
         except:
             return("Job not found")
@@ -90,6 +92,7 @@ class Scheduler(threading.Thread):
             
     def refresh_token(self, job: Job):
         auth_data = refresh_token(job.username, job.password, job.auth_data)
+        print(f"{job.name} is refreshing token")
         job.auth_data = auth_data
     
     #Creates a new job and adds it to the list of jobs        

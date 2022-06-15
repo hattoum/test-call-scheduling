@@ -44,10 +44,6 @@ class Scheduler(threading.Thread):
     #Checks all current jobs to see if it is time to send a request    
     def run_jobs(self):
         jobs = self.get_unpickled()
-        try:
-            print(self.time)
-        except:
-            print("No jobs")
         for job in jobs:
             adjusted_time = self.time - job.start_time
             if adjusted_time%(job.call_interval*60) == 0 and adjusted_time != 0:
@@ -109,10 +105,14 @@ class Scheduler(threading.Thread):
         try:
             auth_data = refresh_token(job.username, job.password, job.auth_data)
             print(f"{job.name} is refreshing token")
+            
+            if "message" in auth_data:
+                print(auth_data)
+                raise Exception("Failed to refresh token, try again")
+            
             job.auth_data = auth_data
         except:
             print(f"{job.name} failed to refresh token")
-            print(refresh_token(refresh_token(job.username, job.password, job.auth_data)))
             raise Exception("Failed to refresh token")
     
     #Creates a new job and adds it to the list of jobs        
@@ -126,6 +126,11 @@ class Scheduler(threading.Thread):
             
         data = create_entities(data_path)
         auth_data = get_auth(username, password)
+        
+        if "message" in auth_data:
+            print(auth_data)
+            raise Exception("Failed to get auth token, try again")
+        
         job = Job(job_name, username, password, call_count, call_interval, self.time, data, auth_data, uuid)
         code = self.send_request(job)
         if(code == 403):

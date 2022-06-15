@@ -43,6 +43,10 @@ class Scheduler(threading.Thread):
     #Checks all current jobs to see if it is time to send a request    
     def run_jobs(self):
         jobs = self.get_unpickled()
+        try:
+            print(self.time)
+        except:
+            print("No jobs")
         for job in jobs:
             adjusted_time = self.time - job.start_time
             if adjusted_time%(job.call_interval*60) == 0 and adjusted_time != 0:

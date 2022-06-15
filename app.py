@@ -52,8 +52,8 @@ def index():
     try:
         r.jobs = scheduler.jobs
         print(r.jobs)
-    except:
-        print("reddisreallydoesnotwork")
+    except(e):
+        print(e)
     # t = Thread(target=lambda q, arg1: q.put(get_jobs(arg1)), args=(que, scheduler))
     # t.start()
     # t.join()

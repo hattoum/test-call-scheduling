@@ -20,7 +20,7 @@ try:
     a = redis_url.split(':')
     password = a[2].split('@')[0]
     host = a[2].split('@')[1]
-    port = a[3]
+    port = a[3][:-1]
     print(f"{password}@{host}:{port}")
 except:
     print("failed to connect to redis")

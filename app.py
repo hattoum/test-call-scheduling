@@ -7,15 +7,26 @@ from time import sleep
 import json
 import gunicorn
 from markupsafe import escape
+from threading import Thread
+from queue import Queue
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/uploads"
 scheduler = Scheduler()
 scheduler.start()
+que = Queue()
+
+def get_jobs(scheduler):
+    jobs = scheduler.jobs
+    return jobs
 
 @app.route("/", methods=["POST","GET"])
 def index():
-    jobs = scheduler.jobs
+    t = Thread(target=lambda q, arg1: q.put(get_jobs(arg1)), args=(que, scheduler))
+    t.start()
+    t.join()
+    jobs = que.get()
+    
     template="index.html"
     if(request.method == "POST"):
         name = request.form["name"]
@@ -53,3 +64,5 @@ def add():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    
+

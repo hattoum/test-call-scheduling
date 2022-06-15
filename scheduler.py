@@ -91,9 +91,14 @@ class Scheduler(threading.Thread):
                 return "Job not found"
             
     def refresh_token(self, job: Job):
-        auth_data = refresh_token(job.username, job.password, job.auth_data)
-        print(f"{job.name} is refreshing token")
-        job.auth_data = auth_data
+        try:
+            auth_data = refresh_token(job.username, job.password, job.auth_data)
+            print(f"{job.name} is refreshing token")
+            job.auth_data = auth_data
+        except:
+            print(f"{job.name} failed to refresh token")
+            print(refresh_token(refresh_token(job.username, job.password, job.auth_data)))
+            raise Exception("Failed to refresh token")
     
     #Creates a new job and adds it to the list of jobs        
     def create_job(self, job_name: str, username: str, password: str, call_count: int, call_interval: int, data_path: str, uuid: str) -> None:

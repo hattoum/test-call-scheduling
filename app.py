@@ -11,13 +11,24 @@ from threading import Thread
 from queue import Queue
 import os
 import redis
+from redisworks import Root
 
 try:
     redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
     red = redis.from_url(redis_url)
     print(redis_url)
+    a = redis_url.split(':')
+    password = a[2].split('@')[0]
+    host = a[2].split('@')[1]
+    port = a[3]
+    print(f"{password}@{host}:{port}")
 except:
     print("failed to connect to redis")
+
+try:
+    r = Root(host=host, port=port, password=password)
+except:
+    print("redisdoesnotwork")
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/uploads"
@@ -37,6 +48,12 @@ def index():
         print(red.get("beep"))
     except:
         print("No redis connection")
+        
+    try:
+        r.jobs = scheduler.jobs
+        print(r.jobs)
+    except:
+        print("reddisreallydoesnotwork")
     # t = Thread(target=lambda q, arg1: q.put(get_jobs(arg1)), args=(que, scheduler))
     # t.start()
     # t.join()

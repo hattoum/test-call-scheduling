@@ -12,10 +12,10 @@ from queue import Queue
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/uploads"
-jobs = []
-scheduler = Scheduler(jobs)
-scheduler.start()
-que = Queue()
+# jobs = []
+scheduler = Scheduler()
+
+# que = Queue()
 
 # def get_jobs(scheduler):
 #     jobs = scheduler.jobs
@@ -27,6 +27,7 @@ def index():
     # t.start()
     # t.join()
     # jobs = que.get()
+    jobs = scheduler.jobs
     print(jobs)
     template="index.html"
     if(request.method == "POST"):
@@ -64,4 +65,5 @@ def add():
 
 
 if __name__ == "__main__":
+    scheduler.start()
     app.run(debug=True)

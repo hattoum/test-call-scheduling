@@ -12,16 +12,17 @@ from queue import Queue
 import os
 import redis
 from redisworks import Root
+import pickle
 
 try:
     redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
     red = redis.from_url(redis_url)
     print(redis_url)
-    a = redis_url.split(':')
-    password = a[2].split('@')[0]
-    host = a[2].split('@')[1]
-    port = a[3][:-1]
-    print(f"{password}@{host}:{port}")
+    # a = redis_url.split(':')
+    # password = a[2].split('@')[0]
+    # host = a[2].split('@')[1]
+    # port = a[3][:-1]
+    # print(f"{password}@{host}:{port}")
 except:
     print("failed to connect to redis")
 
@@ -44,8 +45,11 @@ scheduler = Scheduler()
 @app.route("/", methods=["POST","GET"])
 def index():
     try:
-        red.set("beep","boop")
-        print(red.get("beep"))
+        jobs = scheduler.jobs
+        pickled_jobs = pickle.dumps(jobs)
+        red.set("jobs",pickled_jobs)
+        unpickled_jobs = pickle.loads(red.get("jobs"))
+        print(unpickled_jobs)
     except:
         print("No redis connection")
         
@@ -59,7 +63,7 @@ def index():
     # t.join()
     # jobs = que.get()
     jobs = scheduler.jobs
-    print(jobs)
+    # print(jobs)
     template="index.html"
     if(request.method == "POST"):
         name = request.form["name"]

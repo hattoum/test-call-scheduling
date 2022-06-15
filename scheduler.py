@@ -69,7 +69,7 @@ class Scheduler(threading.Thread):
         try:
             self.jobs.remove(job)
             print(f"{job.name} has been removed")
-            print{f"# active jobs: {len(self.jobs)}"}
+            print(f"# active jobs: {len(self.jobs)}")
             return(f"{job.name} is done")
         except:
             return("Job not found")

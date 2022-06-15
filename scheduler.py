@@ -29,7 +29,7 @@ class Scheduler(threading.Thread):
         threading.Thread.__init__(self)
         self.time = 0
         # self.jobs = []
-        self.daemon = False
+        self.daemon = True
         self.redis = redis.from_url(os.getenv('REDISTOGO_URL', 'redis://localhost:6379'))
 
     

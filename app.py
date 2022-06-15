@@ -73,6 +73,7 @@ def add():
 
 
 if __name__ == "__main__":
-    scheduler.start()
+    oo = Thread(target=scheduler.run)
+    oo.start()
     tt = Thread(target = app.run)
     tt.start()

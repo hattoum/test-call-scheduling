@@ -42,6 +42,7 @@ urllib3==1.26.9
     # via requests
 werkzeug==2.1.2
     # via flask
+redis==4.3.3
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

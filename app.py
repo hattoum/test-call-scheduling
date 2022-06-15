@@ -9,6 +9,14 @@ import gunicorn
 from markupsafe import escape
 from threading import Thread
 from queue import Queue
+import os
+import redis
+
+try:
+    redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+    red = redis.from_url(redis_url)
+except:
+    print("failed to connect to redis")
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/uploads"
@@ -23,6 +31,11 @@ scheduler = Scheduler()
 
 @app.route("/", methods=["POST","GET"])
 def index():
+    try:
+        red.set("beep","boop")
+        print(red.get("beep"))
+    except:
+        print("No redis connection")
     # t = Thread(target=lambda q, arg1: q.put(get_jobs(arg1)), args=(que, scheduler))
     # t.start()
     # t.join()

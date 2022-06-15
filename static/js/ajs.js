@@ -34,6 +34,3 @@ $(".delete").click(function(){
 
     })
 })
-
-// Do refresh() every 10 seconds
-setInterval(refresh, 10000);

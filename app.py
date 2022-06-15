@@ -27,7 +27,7 @@ def index():
     # t.start()
     # t.join()
     # jobs = que.get()
-    
+    print(jobs)
     template="index.html"
     if(request.method == "POST"):
         name = request.form["name"]

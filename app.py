@@ -15,7 +15,7 @@ scheduler.start()
 
 @app.route("/", methods=["POST","GET"])
 def index():
-
+    jobs = scheduler.jobs
     template="index.html"
     if(request.method == "POST"):
         name = request.form["name"]
@@ -31,17 +31,16 @@ def index():
             scheduler.create_job(name, username, password, count, interval, sheet, uuid)
             return redirect(url_for("index"))
         except Exception as e:
-            return render_template(template,jobs = scheduler.jobs, message=str(e))
+            return render_template(template,jobs = jobs, message=str(e))
         
     
     else:
-        return render_template(template,jobs=scheduler.jobs, message="")
+        return render_template(template,jobs= jobs, message="")
     
     
 @app.route("/add", methods=["POST","GET"])
 def add():
-    # print(request)
-    # return request
+
     if(request.method == "POST"):
         
         # print(type(request.json["name"]))

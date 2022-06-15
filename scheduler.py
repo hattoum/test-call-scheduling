@@ -29,12 +29,13 @@ class Scheduler(threading.Thread):
         threading.Thread.__init__(self)
         self.time = 0
         # self.jobs = []
-        self.daemon = True
+        self.daemon = False
         self.redis = redis.from_url(os.getenv('REDISTOGO_URL', 'redis://localhost:6379'))
 
     
     #Starts the timer    
     def run(self) -> None:
+        print("here we go")
         while True:
             sleep(1)
             self.run_jobs()

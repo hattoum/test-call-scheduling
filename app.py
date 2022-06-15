@@ -17,53 +17,26 @@ import pickle
 try:
     redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
     red = redis.from_url(redis_url)
-    print(redis_url)
-    # a = redis_url.split(':')
-    # password = a[2].split('@')[0]
-    # host = a[2].split('@')[1]
-    # port = a[3][:-1]
-    # print(f"{password}@{host}:{port}")
+    j = pickle.dumps([])
+    red.set("jobs",j)
 except:
     print("failed to connect to redis")
 
-try:
-    r = Root(host=host, port=port, password=password)
-except:
-    print("redisdoesnotwork")
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/uploads"
-# jobs = []
 scheduler = Scheduler()
 
-# que = Queue()
-
-# def get_jobs(scheduler):
-#     jobs = scheduler.jobs
-#     return jobs
 
 @app.route("/", methods=["POST","GET"])
 def index():
     try:
-        jobs = scheduler.jobs
-        pickled_jobs = pickle.dumps(jobs)
-        red.set("jobs",pickled_jobs)
-        unpickled_jobs = pickle.loads(red.get("jobs"))
-        print(unpickled_jobs)
+        jobs = pickle.loads(red.get("jobs"))
+        print(jobs)
     except:
+        jobs=[]
         print("No redis connection")
         
-    try:
-        r.jobs = scheduler.jobs
-        print(r.jobs)
-    except Exception as e:
-        print(e)
-    # t = Thread(target=lambda q, arg1: q.put(get_jobs(arg1)), args=(que, scheduler))
-    # t.start()
-    # t.join()
-    # jobs = que.get()
-    jobs = scheduler.jobs
-    # print(jobs)
     template="index.html"
     if(request.method == "POST"):
         name = request.form["name"]

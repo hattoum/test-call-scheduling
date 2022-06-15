@@ -6,7 +6,9 @@ from initial_entities import create_entities
 from calls import *
 import threading
 import ctypes
-
+import redis
+import os
+import pickle
 
 @dataclass
 class Job:
@@ -26,8 +28,10 @@ class Scheduler(threading.Thread):
     def __init__(self) -> None:
         threading.Thread.__init__(self)
         self.time = 0
-        self.jobs = []
+        # self.jobs = []
         self.daemon = True
+        self.redis = redis.from_url(os.getenv('REDISTOGO_URL', 'redis://localhost:6379'))
+
     
     #Starts the timer    
     def run(self) -> None:
@@ -38,7 +42,8 @@ class Scheduler(threading.Thread):
           
     #Checks all current jobs to see if it is time to send a request    
     def run_jobs(self):
-        for job in self.jobs:
+        jobs = self.get_unpickled()
+        for job in jobs:
             adjusted_time = self.time - job.start_time
             if adjusted_time%(job.call_interval*60) == 0 and adjusted_time != 0:
                 job.call_count += 1
@@ -50,6 +55,8 @@ class Scheduler(threading.Thread):
                 #Refresh token every call_interval (10) calls
                 if  job.call_count % job.refresh_interval == 0 and job.call_count != 0:
                     self.refresh_token(job)
+                    
+                self.send_pickle(jobs)
     
     
     #Sends a POST request to create the calls                
@@ -67,16 +74,19 @@ class Scheduler(threading.Thread):
     #Remove job from list of jobs        
     def remove_job(self, job: Job):
         try:
-            self.jobs.remove(job)
+            jobs = self.get_unpickled()
+            jobs.remove(job)
+            self.send_pickle(jobs)
             print(f"{job.name} has been removed")
-            print(f"# active jobs: {len(self.jobs)}")
+            print(f"# active jobs: {len(jobs)}")
             return(f"{job.name} is done")
         except:
             return("Job not found")
         
     # returns a job given its name        
     def get_job_by_name(self, name: str) -> Job:
-        for job in self.jobs:
+        jobs = self.get_unpickled()
+        for job in jobs:
             if job.name == name:
                 return job
         return None
@@ -103,7 +113,9 @@ class Scheduler(threading.Thread):
     #Creates a new job and adds it to the list of jobs        
     def create_job(self, job_name: str, username: str, password: str, call_count: int, call_interval: int, data_path: str, uuid: str) -> None:
         
-        for job in self.jobs:
+        jobs = self.get_unpickled()
+        
+        for job in jobs:
             if job.name == job_name:
                 raise ValueError("Job already exists")
             
@@ -115,9 +127,15 @@ class Scheduler(threading.Thread):
             raise Exception("Account does not have permission to push calls")
         if(code == 0):
             raise Exception("Credentials are incorrect")
-
-        self.jobs.append(job)
-        return f"Job {job_name} created"
+        
+        jobs.append(job)
+        
+        try:
+            self.send_pickle(jobs)
+            return f"Job {job_name} created"
+        except:
+            raise Exception("Failed to send pickle")
+        
     
     
     # returns id of the thread the object is running in    
@@ -134,6 +152,17 @@ class Scheduler(threading.Thread):
         res = ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, ctypes.py_object(SystemExit))
         if res > 1:
             ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, 0)
+            
+            
+    def get_unpickled(self):
+        unpickled_jobs = pickle.loads(self.redis.get("jobs"))
+        return unpickled_jobs
+
+    def send_pickle(self, jobs):
+        pickled_jobs = pickle.dumps(jobs)
+        self.redis.set("jobs", pickled_jobs)
+            
+        
 
 # def main(scheduler: Scheduler):
     

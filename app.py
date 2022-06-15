@@ -73,8 +73,13 @@ def add():
 
 
 if __name__ == "__main__":
+    print("pp")
+    print("-"*55)
     # oo = Thread(target=scheduler.run)
     # oo.start()
     tt = Thread(target = app.run)
     tt.start()
     scheduler.run()
+    print("pp")
+    print("-"*55)
+    

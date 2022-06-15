@@ -23,10 +23,10 @@ class Job:
     refresh_interval: int = 1  
 
 class Scheduler(threading.Thread):
-    def __init__(self) -> None:
+    def __init__(self, jobs) -> None:
         threading.Thread.__init__(self)
         self.time = 0
-        self.jobs = []
+        self.jobs = jobs
         self.daemon = True
     
     #Starts the timer    

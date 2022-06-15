@@ -20,7 +20,7 @@ class Job:
     auth_data: dict
     uuid: str
     call_count: int = 1
-    refresh_interval: int = 10  
+    refresh_interval: int = 1  
 
 class Scheduler(threading.Thread):
     def __init__(self) -> None:
@@ -43,14 +43,16 @@ class Scheduler(threading.Thread):
             if adjusted_time%(job.call_interval*60) == 0 and adjusted_time != 0:
                 job.call_count += 1
                 self.send_request(job)
-                
+                print(job.call_count % job.refresh_interval)
+                print(job.call_count)
                 #Remove job if it is done
                 if job.call_count >= job.total_call_count:
                     self.remove_job(job)
                     
                 #Refresh token every call_interval (10) calls
-                if job.call_count % job.refresh_interval == 0 and job.call_count != 0:
-                    refresh_token(job.username, job.password, job.auth_data)
+                if  job.call_count % job.refresh_interval == 0 and job.call_count != 0:
+                    print("here")
+                    self.refresh_token(job)
     
     
     #Sends a POST request to create the calls                
@@ -90,7 +92,9 @@ class Scheduler(threading.Thread):
                 return "Job not found"
             
     def refresh_token(self, job: Job):
+        print(f"Before refresh: {job.auth_data}")
         auth_data = refresh_token(job.username, job.password, job.auth_data)
+        print(f"After refresh: {auth_data}")
         job.auth_data = auth_data
     
     #Creates a new job and adds it to the list of jobs        

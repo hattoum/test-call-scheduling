@@ -15,6 +15,7 @@ import redis
 try:
     redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
     red = redis.from_url(redis_url)
+    print(redis_url)
 except:
     print("failed to connect to redis")
 

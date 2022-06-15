@@ -74,4 +74,5 @@ def add():
 
 if __name__ == "__main__":
     scheduler.start()
-    app.run(debug=True)
+    tt = Thread(target = app.run)
+    tt.start()

@@ -55,7 +55,8 @@ class Scheduler(threading.Thread):
                 print(f"Total call count: {job.total_call_count}")
                 #Remove job if it is done
                 if job.call_count >= job.total_call_count:
-                    self.remove_job(job)
+                    # self.remove_job(job)
+                    jobs.remove(job)
                     
                 #Refresh token every call_interval (10) calls
                 if  job.call_count % job.refresh_interval == 0 and job.call_count != 0:

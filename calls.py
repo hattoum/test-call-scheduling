@@ -12,7 +12,7 @@ def get_auth(username: str, password: str, cms: str):
     Returns:
         dict: dictionary with the authorization token. Includes one key, 'Authorization'
     """
-    auth_url = f"https://cms-v3.{cms}.com/api/v2/ext/auth"
+    auth_url = f"https://cms-v3.{cms}/api/v2/ext/auth"
     post = requests.post(auth_url, auth=HTTPBasicAuth(username, password))
     
     try:
@@ -35,13 +35,13 @@ def add_dialog(uuid: str, body: dict, auth_data: dict, cms: str):
         str: code of the response
     """
     headers = {"Authorization":"Bearer " + auth_data["token"]}
-    call_url = f"https://cms-v3.{cms}.com/api/v2/ext/dialog/dialogs-group-initial?agent_uuid={uuid}"
+    call_url = f"https://cms-v3.{cms}/api/v2/ext/dialog/dialogs-group-initial?agent_uuid={uuid}"
     uuid_ent = requests.post(call_url,json=body,headers=headers)
     return uuid_ent.status_code
 
 
 def refresh_token(username: str, password: str, auth_data: dict, cms: str):
-    refresh_url = f"https://cms-v3.{cms}.com/api/v2/ext/auth/refresh"
+    refresh_url = f"https://cms-v3.{cms}/api/v2/ext/auth/refresh"
     refresh_body = {"refresh_token":auth_data["refresh_token"]}
     refresh_post = requests.post(refresh_url,auth=HTTPBasicAuth(username,password),json=refresh_body)
     try:

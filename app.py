@@ -76,7 +76,8 @@ print("pp")
 print("-"*55)
 
 if __name__ == "__main__":
-    tt = Thread(target = app.run)
-    tt.start()
+    # tt = Thread(target = app.run)
+    # tt.start()
+    app.run(debug=False)
 
     

@@ -33,7 +33,7 @@ scheduler.start()
 def index():
     try:
         jobs = pickle.loads(red.get("jobs"))
-        print(jobs)
+        # print(jobs)
     except:
         jobs=[]
         print("No redis connection")

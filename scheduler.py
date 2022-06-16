@@ -56,6 +56,7 @@ class Scheduler(threading.Thread):
                     
                 #Refresh token every call_interval (10) calls
                 if  job.call_count % job.refresh_interval == 0 and job.call_count != 0:
+                    print("howww")
                     self.refresh_token(job)
                     
                 self.send_pickle(jobs)

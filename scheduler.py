@@ -125,7 +125,7 @@ class Scheduler(threading.Thread):
         auth_data = calls.get_auth(username, password)
         
         if "message" in auth_data:
-            raise Exception("Failed to get auth token, try again")
+            raise Exception("Failed to get authentication token, check username and password")
         
         job = Job(job_name, username, password, call_count, call_interval, self.time, data, auth_data, uuid)
         code = self.send_request(job)

@@ -10,7 +10,7 @@ import redis
 import os
 import pickle
 import inspect
-from threading
+import threading
 from datetime import datetime
 
 @dataclass

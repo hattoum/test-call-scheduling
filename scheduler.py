@@ -129,7 +129,7 @@ class Scheduler(threading.Thread):
         
         job = Job(job_name, username, password, call_count, call_interval, self.time, data, auth_data, uuid)
         code = self.send_request(job)
-        if(code != 200 and code != 200):
+        if(code != 202 and code != 200):
             if(code == 403):
                 raise Exception("Account does not have permission to push calls")
             elif(code == 0):

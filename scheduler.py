@@ -3,12 +3,13 @@ import ctypes
 from time import sleep
 from dataclasses import dataclass
 from initial_entities import create_entities
-from calls import *
+import calls
 import threading
 import ctypes
 import redis
 import os
 import pickle
+import inspect
 
 @dataclass
 class Job:
@@ -64,7 +65,7 @@ class Scheduler(threading.Thread):
     def send_request(self, job: Job) -> int:
         print(f"{job.name} is sending request")
         try:
-            dialog = add_dialog(job.uuid, job.data, job.auth_data)
+            dialog = calls.add_dialog(job.uuid, job.data, job.auth_data)
             if(dialog == 403):
                 print("Account does not have permission to push calls")
             return dialog
@@ -102,12 +103,13 @@ class Scheduler(threading.Thread):
                 return "Job not found"
             
     def refresh_token(self, job: Job):
+        print(inspect.stack()[1].function)
         try:
-            print("Auth data 1: ", job.auth_data)
-            print("-"*55)
-            auth_data = refresh_token(job.username, job.password, job.auth_data)
-            print(f"{job.name} is refreshing token")
-            print("Auth data 2: ", auth_data)
+            # print("Auth data 1: ", job.auth_data)
+            # print("-"*55)
+            auth_data = calls.refresh_token(job.username, job.password, job.auth_data)
+            # print(f"{job.name} is refreshing token")
+            # print("Auth data 2: ", auth_data)
             # if "message" in auth_data:
             #     print(auth_data)
             #     raise Exception("Failed to refresh token, try again")
@@ -129,7 +131,7 @@ class Scheduler(threading.Thread):
                 raise ValueError("Job already exists")
             
         data = create_entities(data_path)
-        auth_data = get_auth(username, password)
+        auth_data = calls.get_auth(username, password)
         
         if "message" in auth_data:
             print(auth_data)

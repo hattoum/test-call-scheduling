@@ -120,8 +120,10 @@ class Scheduler(threading.Thread):
         for job in jobs:
             if job.name == job_name:
                 raise ValueError("Job already exists")
-            
-        data = create_entities(data_path)
+        try:    
+            data = create_entities(data_path)
+        except Exception as e:
+            raise e
         auth_data = calls.get_auth(username, password)
         
         if "message" in auth_data:

@@ -9,6 +9,7 @@ def create_entities(sheet: str) -> None:
     if validate_data(df):
         return df.to_dict("records")
     else:
+        raise ValueError("Boot file does not contain msisdn")
         return "No msisdn in the data"
 
 def validate_data(df: pd.DataFrame) -> bool:

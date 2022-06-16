@@ -24,6 +24,7 @@ class Job:
     data: str
     auth_data: dict
     uuid: str
+    cms: str
     call_count: int = 1
     refresh_interval: int = 10  
 
@@ -50,6 +51,8 @@ class Scheduler(threading.Thread):
             if adjusted_time%(job.call_interval*60) == 0 and adjusted_time != 0:
                 job.call_count += 1
                 self.send_request(job)
+                print(f"Call count: {job.call_count}")
+                print(f"Total call count: {job.total_call_count}")
                 #Remove job if it is done
                 if job.call_count >= job.total_call_count:
                     self.remove_job(job)
@@ -65,7 +68,7 @@ class Scheduler(threading.Thread):
     def send_request(self, job: Job) -> int:
         print(f"{job.name} is sending request")
         try:
-            dialog = calls.add_dialog(job.uuid, job.data, job.auth_data)
+            dialog = calls.add_dialog(job.uuid, job.data, job.auth_data, job.cms)
             if(dialog == 403):
                 print("Account does not have permission to push calls")
             return dialog
@@ -104,16 +107,14 @@ class Scheduler(threading.Thread):
             
     def refresh_token(self, job: Job):
         try:
-            auth_data = calls.refresh_token(job.username, job.password, job.auth_data)
-
-            
+            auth_data = calls.refresh_token(job.username, job.password, job.auth_data, job.cms)
             job.auth_data = auth_data
         except:
             print(f"{job.name} failed to refresh token")
             raise Exception("Failed to refresh token")
     
     #Creates a new job and adds it to the list of jobs        
-    def create_job(self, job_name: str, username: str, password: str, call_count: int, call_interval: int, data_path: str, uuid: str) -> None:
+    def create_job(self, job_name: str, username: str, password: str, call_count: int, call_interval: int, data_path: str, uuid: str, cms: str) -> None:
 
         jobs = self.get_unpickled()
         
@@ -124,12 +125,13 @@ class Scheduler(threading.Thread):
             data = create_entities(data_path)
         except Exception as e:
             raise e
-        auth_data = calls.get_auth(username, password)
+        
+        auth_data = calls.get_auth(username, password,cms)
         
         if "message" in auth_data:
             raise Exception("Failed to get authentication token, check username and password")
         
-        job = Job(job_name, username, password, call_count, call_interval, self.time, data, auth_data, uuid)
+        job = Job(job_name, username, password, call_count, call_interval, self.time, data, auth_data, uuid, cms)
         code = self.send_request(job)
         if(code != 202 and code != 200):
             if(code == 403):
@@ -166,11 +168,12 @@ class Scheduler(threading.Thread):
         if res > 1:
             ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, 0)
             
-            
+    #Get jobs from redis and unpcikle        
     def get_unpickled(self):
         unpickled_jobs = pickle.loads(self.redis.get("jobs"))
         return unpickled_jobs
 
+    #Pickle jobs and store in redis
     def send_pickle(self, jobs):
         pickled_jobs = pickle.dumps(jobs)
         self.redis.set("jobs", pickled_jobs)

@@ -41,10 +41,11 @@ def index():
         count = int(request.form["count"])
         interval = int(request.form["interval"])
         sheet = request.files["sheet"]
+        cms = request.form["cms"].lower()
         
         
         try:
-            scheduler.create_job(name, username, password, count, interval, sheet, uuid)
+            scheduler.create_job(name, username, password, count, interval, sheet, uuid,cms)
             return redirect(url_for("index"))
         except Exception as e:
             return render_template(template,jobs = jobs, message=str(e))

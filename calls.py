@@ -2,7 +2,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 
-def get_auth(username: str, password: str):
+def get_auth(username: str, password: str, cms: str):
     """_summary_
 
     Args:
@@ -12,7 +12,7 @@ def get_auth(username: str, password: str):
     Returns:
         dict: dictionary with the authorization token. Includes one key, 'Authorization'
     """
-    auth_url = "https://cms-v3.voctiv.com/api/v2/ext/auth"
+    auth_url = f"https://cms-v3.{cms}.com/api/v2/ext/auth"
     post = requests.post(auth_url, auth=HTTPBasicAuth(username, password))
     
     try:
@@ -23,7 +23,7 @@ def get_auth(username: str, password: str):
     return auth_data
 
 
-def add_dialog(uuid: str, body: dict, auth_data: dict):
+def add_dialog(uuid: str, body: dict, auth_data: dict, cms: str):
     """_summary_
 
     Args:
@@ -35,15 +35,14 @@ def add_dialog(uuid: str, body: dict, auth_data: dict):
         str: code of the response
     """
     headers = {"Authorization":"Bearer " + auth_data["token"]}
-    call_url = f"https://cms-v3.voctiv.com/api/v2/ext/dialog/dialogs-group-initial?agent_uuid={uuid}"
+    call_url = f"https://cms-v3.{cms}.com/api/v2/ext/dialog/dialogs-group-initial?agent_uuid={uuid}"
     uuid_ent = requests.post(call_url,json=body,headers=headers)
     return uuid_ent.status_code
 
 
-def refresh_token(username: str, password: str, auth_data: dict):
-    refresh_url = "https://cms-v3.voctiv.com/api/v2/ext/auth/refresh"
+def refresh_token(username: str, password: str, auth_data: dict, cms: str):
+    refresh_url = f"https://cms-v3.{cms}.com/api/v2/ext/auth/refresh"
     refresh_body = {"refresh_token":auth_data["refresh_token"]}
-    # print(f"Refresh body: {refresh_body}")
     refresh_post = requests.post(refresh_url,auth=HTTPBasicAuth(username,password),json=refresh_body)
     try:
         refresh_data = refresh_post.json()

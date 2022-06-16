@@ -114,9 +114,7 @@ class Scheduler(threading.Thread):
     
     #Creates a new job and adds it to the list of jobs        
     def create_job(self, job_name: str, username: str, password: str, call_count: int, call_interval: int, data_path: str, uuid: str) -> None:
-        for thread in threading.enumerate():
-            print(thread)
-            
+
         jobs = self.get_unpickled()
         
         for job in jobs:
@@ -127,7 +125,6 @@ class Scheduler(threading.Thread):
         auth_data = calls.get_auth(username, password)
         
         if "message" in auth_data:
-            print(auth_data)
             raise Exception("Failed to get auth token, try again")
         
         job = Job(job_name, username, password, call_count, call_interval, self.time, data, auth_data, uuid)
@@ -137,7 +134,7 @@ class Scheduler(threading.Thread):
                 raise Exception("Account does not have permission to push calls")
             elif(code == 0):
                 raise Exception("Credentials are incorrect")
-            elif(code == 40):
+            elif(code == 400):
                 raise Exception("UUID is incorrect")
             else:
                 print(code)

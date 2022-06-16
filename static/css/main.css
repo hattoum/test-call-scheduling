@@ -120,6 +120,18 @@ input[type="file"] {
   background-color: #400080;
 }
 
+select {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    display: block;
+    padding: 0.5rem;
+}
+
+select:focus {
+    outline: 2px solid #d5ff73e5 !important;
+}
+
 button {
     color: #400080;
     background-color: #d6ff73;

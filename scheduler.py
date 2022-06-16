@@ -170,3 +170,4 @@ class Scheduler(threading.Thread):
         pickled_jobs = pickle.dumps(jobs)
         self.redis.set("jobs", pickled_jobs)
 
+

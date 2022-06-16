@@ -119,7 +119,9 @@ class Scheduler(threading.Thread):
     
     #Creates a new job and adds it to the list of jobs        
     def create_job(self, job_name: str, username: str, password: str, call_count: int, call_interval: int, data_path: str, uuid: str) -> None:
-        
+        for thread in threading.enumerate():
+            print(thread)
+            
         jobs = self.get_unpickled()
         
         for job in jobs:

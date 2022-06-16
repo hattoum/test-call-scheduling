@@ -73,12 +73,8 @@ def add():
         
         return "200"
 
-print("pp")
-print("-"*55)
-
 if __name__ == "__main__":
-    # tt = Thread(target = app.run)
-    # tt.start()
+    print("how")
     app.run(debug=False)
 
     

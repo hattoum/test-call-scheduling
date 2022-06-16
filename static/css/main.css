@@ -98,7 +98,7 @@ form {
 
 .sperator{
     border-left: 1px solid #b3d661;
-    height: 250px;
+    height: 390px;
     margin-bottom: 2rem;
 } 
 
@@ -146,4 +146,8 @@ button {
 button:hover {
     background-color: #b3d661;
 
+}
+
+.submit-btn {
+    margin-top: 5%;
 }

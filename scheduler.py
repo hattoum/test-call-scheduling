@@ -25,7 +25,7 @@ class Job:
     auth_data: dict
     uuid: str
     call_count: int = 1
-    refresh_interval: int = 1  
+    refresh_interval: int = 10  
 
 class Scheduler(threading.Thread):
     def __init__(self) -> None:
@@ -132,12 +132,16 @@ class Scheduler(threading.Thread):
         
         job = Job(job_name, username, password, call_count, call_interval, self.time, data, auth_data, uuid)
         code = self.send_request(job)
-        if(code == 403):
-            raise Exception("Account does not have permission to push calls")
-        if(code == 0):
-            raise Exception("Credentials are incorrect")
-        else:
-            print(code)
+        if(code != 200 and code != 200):
+            if(code == 403):
+                raise Exception("Account does not have permission to push calls")
+            elif(code == 0):
+                raise Exception("Credentials are incorrect")
+            elif(code == 40):
+                raise Exception("UUID is incorrect")
+            else:
+                print(code)
+                raise Exception(f"Error code {code}")
         
         jobs.append(job)
         

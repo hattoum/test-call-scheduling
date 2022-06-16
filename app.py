@@ -13,8 +13,8 @@ import pickle
 try:
     redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
     red = redis.from_url(redis_url)
-    j = pickle.dumps([])
-    red.set("jobs",j)
+    init_jobs = pickle.dumps([])
+    red.set("jobs",init_jobs)
 except:
     print("failed to connect to redis")
 

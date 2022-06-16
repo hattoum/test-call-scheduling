@@ -28,7 +28,7 @@ app.config["UPLOAD_FOLDER"] = "/uploads"
 scheduler = Scheduler("test")
 # scheduler.start()
 t = Thread(target=scheduler.run, daemon=True)
-# t.start()
+t.start()
 
 @app.route("/", methods=["POST","GET"])
 def index():

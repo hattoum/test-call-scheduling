@@ -26,9 +26,9 @@ class Job:
     call_count: int = 1
     refresh_interval: int = 1  
 
-class Scheduler(threading.Thread):
+class Scheduler(): #threading.Thread
     def __init__(self,var1) -> None:
-        threading.Thread.__init__(self)
+        # threading.Thread.__init__(self)
         self.time = 0
         # self.jobs = []
         self.var1= var1

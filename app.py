@@ -26,8 +26,9 @@ except:
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/uploads"
 scheduler = Scheduler("test")
-scheduler.start()
-
+# scheduler.start()
+t = Thread(target=scheduler.run, daemon=True)
+t.start()
 
 @app.route("/", methods=["POST","GET"])
 def index():

@@ -103,7 +103,7 @@ class Scheduler(threading.Thread):
             
     def refresh_token(self, job: Job):
         try:
-            print("Auth data 1: ", auth_data)
+            print("Auth data 1: ", job.auth_data)
             print("-"*55)
             auth_data = refresh_token(job.username, job.password, job.auth_data)
             print(f"{job.name} is refreshing token")

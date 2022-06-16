@@ -10,6 +10,7 @@ import redis
 import os
 import pickle
 import inspect
+from datetime import datetime
 
 @dataclass
 class Job:
@@ -36,14 +37,15 @@ class Scheduler(threading.Thread):
     
     #Starts the timer    
     def run(self) -> None:
-        print("here we go")
         while True:
+            print(f"[{datetime.now()}] run: {inspect.stack()[1].function}")
             sleep(1)
             self.run_jobs()
             self.time +=1
           
     #Checks all current jobs to see if it is time to send a request    
     def run_jobs(self):
+        print(f"[{datetime.now()}] run_jobs: {inspect.stack()[1].function}")
         jobs = self.get_unpickled()
         for job in jobs:
             adjusted_time = self.time - job.start_time
@@ -56,7 +58,7 @@ class Scheduler(threading.Thread):
                     
                 #Refresh token every call_interval (10) calls
                 if  job.call_count % job.refresh_interval == 0 and job.call_count != 0:
-                    print("howww")
+                    # print("howww")
                     self.refresh_token(job)
                     
                 self.send_pickle(jobs)

@@ -27,11 +27,8 @@ class Job:
     refresh_interval: int = 1  
 
 class Scheduler(): #threading.Thread
-    def __init__(self,var1) -> None:
-        # threading.Thread.__init__(self)
+    def __init__(self) -> None:
         self.time = 0
-        # self.jobs = []
-        self.var1= var1
         self.daemon = True
         self.redis = redis.from_url(os.getenv('REDISTOGO_URL', 'redis://localhost:6379'))
 
@@ -39,14 +36,12 @@ class Scheduler(): #threading.Thread
     #Starts the timer    
     def run(self) -> None:
         while True:
-            print(f"[{datetime.now()}] run: {inspect.stack()[1].function}")
             sleep(1)
             self.run_jobs()
             self.time +=1
           
     #Checks all current jobs to see if it is time to send a request    
     def run_jobs(self):
-        print(f"[{datetime.now()}] run_jobs: {inspect.stack()[1].function}")
         jobs = self.get_unpickled()
         for job in jobs:
             adjusted_time = self.time - job.start_time
@@ -59,7 +54,6 @@ class Scheduler(): #threading.Thread
                     
                 #Refresh token every call_interval (10) calls
                 if  job.call_count % job.refresh_interval == 0 and job.call_count != 0:
-                    # print("howww")
                     self.refresh_token(job)
                     
                 self.send_pickle(jobs)
@@ -107,16 +101,9 @@ class Scheduler(): #threading.Thread
                 return "Job not found"
             
     def refresh_token(self, job: Job):
-        print(f"[{datetime.now()}] refresh_token: {inspect.stack()[1].function}")
         try:
-            # print("Auth data 1: ", job.auth_data)
-            # print("-"*55)
             auth_data = calls.refresh_token(job.username, job.password, job.auth_data)
-            # print(f"{job.name} is refreshing token")
-            # print("Auth data 2: ", auth_data)
-            # if "message" in auth_data:
-            #     print(auth_data)
-            #     raise Exception("Failed to refresh token, try again")
+
             
             job.auth_data = auth_data
         except:
@@ -147,6 +134,8 @@ class Scheduler(): #threading.Thread
             raise Exception("Account does not have permission to push calls")
         if(code == 0):
             raise Exception("Credentials are incorrect")
+        else:
+            print(code)
         
         jobs.append(job)
         
@@ -156,7 +145,6 @@ class Scheduler(): #threading.Thread
         except:
             raise Exception("Failed to send pickle")
         
-    
     
     # returns id of the thread the object is running in    
     def get_id(self):
@@ -181,25 +169,4 @@ class Scheduler(): #threading.Thread
     def send_pickle(self, jobs):
         pickled_jobs = pickle.dumps(jobs)
         self.redis.set("jobs", pickled_jobs)
-            
-        
 
-# def main(scheduler: Scheduler):
-    
-#     scheduler.start()
-    
-#     login = "hamer_api@voctiv.net"
-#     password = "xATL6Qgh"
-#     print(scheduler.create_job("one", login, password, 2, 1, "bb.xlsx","3c1221f6-cc53-476c-b70a-b09c232b8c65"))
-#     sleep(30)
-#     scheduler.create_job("one", login, password, 2, 1, "bbc.xlsx","3c1221f6-cc53-476c-b70a-b09c232b8c65")
-#     while True:
-#         sleep(0.1)
-        
-# if __name__ == "__main__":
-#     scheduler = Scheduler()
-#     try:
-#         main(scheduler)
-#     except KeyboardInterrupt:
-#         scheduler.kill_thread()
-    

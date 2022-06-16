@@ -1,17 +1,13 @@
-from flask import Flask, redirect, render_template, url_for, request, jsonify
+from flask import Flask, redirect, render_template, url_for, request
 from scheduler import Scheduler
-import codecs
 import pandas as pd
 import os
-from time import sleep
-import json
 import gunicorn
 from markupsafe import escape
 from threading import Thread
 from queue import Queue
 import os
 import redis
-from redisworks import Root
 import pickle
 
 try:
@@ -26,15 +22,12 @@ except:
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/uploads"
 scheduler = Scheduler("test")
-# scheduler.start()
-t = Thread(target=scheduler.run, daemon=True)
-t.start()
+scheduler.start()
 
 @app.route("/", methods=["POST","GET"])
 def index():
     try:
         jobs = pickle.loads(red.get("jobs"))
-        # print(jobs)
     except:
         jobs=[]
         print("No redis connection")
@@ -65,16 +58,11 @@ def index():
 def add():
 
     if(request.method == "POST"):
-        
-        # print(type(request.json["name"]))
+
         job = request.json["name"]
         scheduler.remove_job_by_name(job)
-        # return render_template("index.html",jobs=scheduler.jobs, status = "")
         
         return "200"
 
-if __name__ == "__main__":
-    print("how")
-    app.run(debug=False)
 
     

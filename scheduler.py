@@ -27,10 +27,11 @@ class Job:
     refresh_interval: int = 1  
 
 class Scheduler(threading.Thread):
-    def __init__(self) -> None:
+    def __init__(self,var1) -> None:
         threading.Thread.__init__(self)
         self.time = 0
         # self.jobs = []
+        self.var1= var1
         self.daemon = True
         self.redis = redis.from_url(os.getenv('REDISTOGO_URL', 'redis://localhost:6379'))
 
@@ -106,7 +107,7 @@ class Scheduler(threading.Thread):
                 return "Job not found"
             
     def refresh_token(self, job: Job):
-        print(inspect.stack()[1].function)
+        print(f"[{datetime.now()}] refresh_token: {inspect.stack()[1].function}")
         try:
             # print("Auth data 1: ", job.auth_data)
             # print("-"*55)

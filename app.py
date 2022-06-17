@@ -1,3 +1,4 @@
+import sched
 from flask import Flask, redirect, render_template, url_for, request
 from scheduler import Scheduler
 import pandas as pd
@@ -31,6 +32,12 @@ def index():
     except:
         jobs=[]
         print("No redis connection")
+    
+    if(scheduler.is_alive()):
+        print(f"Scheduler thread running")
+    else:
+        print(f"Scheduler thread has stopped. Restarting...")
+        scheduler.start()
         
     template="index.html"
     if(request.method == "POST"):

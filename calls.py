@@ -37,6 +37,8 @@ def add_dialog(uuid: str, body: dict, auth_data: dict, cms: str):
     headers = {"Authorization":"Bearer " + auth_data["token"]}
     call_url = f"https://cms-v3.{cms}/api/v2/ext/dialog/dialogs-group-initial?agent_uuid={uuid}"
     uuid_ent = requests.post(call_url,json=body,headers=headers)
+    print(str(body))
+    print("-"*20)
     print(uuid_ent.text)
     return uuid_ent.status_code
 

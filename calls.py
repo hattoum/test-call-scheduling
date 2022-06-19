@@ -38,7 +38,9 @@ def add_dialog(uuid: str, body: dict, auth_data: dict, cms: str):
     call_url = f"https://cms-v3.{cms}/api/v2/ext/dialog/dialogs-group-initial?agent_uuid={uuid}"
     uuid_ent = requests.post(call_url,json=body,headers=headers)
     print(str(body))
+    print(uuid_ent)
     print(uuid_ent.text)
+    print(uuid_ent.status_code)
     print("-"*20)
     if(uuid_ent.status_code == 500 or uuid_ent.status_code == "500"):
         new_body = {str(key): str(value) for key, value in body.items()}
@@ -46,6 +48,7 @@ def add_dialog(uuid: str, body: dict, auth_data: dict, cms: str):
         print(str(new_body))
         print(new_uuid_ent.text)
         print("-"*20)
+        return new_uuid_ent.status_code
     return uuid_ent.status_code
 
 

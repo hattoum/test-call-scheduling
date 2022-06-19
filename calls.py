@@ -40,7 +40,7 @@ def add_dialog(uuid: str, body: dict, auth_data: dict, cms: str):
     print(str(body))
     print(uuid_ent.text)
     print("-"*20)
-    if(uuid_ent.status_code == 500):
+    if(uuid_ent.status_code == 500 or uuid_ent.status_code == "500"):
         new_body = {str(key): str(value) for key, value in body.items()}
         new_uuid_ent = requests.post(call_url,json=new_body,headers=headers)
         print(str(new_body))

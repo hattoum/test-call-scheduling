@@ -73,7 +73,8 @@ class Scheduler(threading.Thread):
             if(dialog == 403):
                 print("Account does not have permission to push calls")
             return dialog
-        except:
+        except Exception as e:
+            print(e)
             return 0
         
     

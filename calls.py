@@ -36,13 +36,17 @@ def add_dialog(uuid: str, body: dict, auth_data: dict, cms: str):
     """
     headers = {"Authorization":"Bearer " + auth_data["token"]}
     call_url = f"https://cms-v3.{cms}/api/v2/ext/dialog/dialogs-group-initial?agent_uuid={uuid}"
-    uuid_ent = requests.post(call_url,json=body,headers=headers)
-    print(str(body))
-    print(uuid_ent)
-    print(uuid_ent.text)
-    print(uuid_ent.status_code == 500)
-    
-    if(uuid_ent.status_code == 500 or uuid_ent.status_code == "500"):
+    try:
+        uuid_ent = requests.post(call_url,json=body,headers=headers)
+        print(str(body))
+        print(uuid_ent)
+        print(uuid_ent.text)
+        print(uuid_ent.status_code == 500)
+    except Exception as e:
+        uuid_ent = 0
+        print(e)
+        
+    if(uuid_ent == 0 or uuid_ent.status_code == 500 or uuid_ent.status_code == "500"):
         new_body = [{str(key): str(value) for key, value in item.items()} for item in body]
         new_uuid_ent = requests.post(call_url,json=new_body,headers=headers)
         print("-"*20)

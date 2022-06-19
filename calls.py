@@ -46,12 +46,13 @@ def add_dialog(uuid: str, body: dict, auth_data: dict, cms: str):
         print("oooooo")
         try:
             new_body = {str(key): str(value) for key, value in body.items()}
-        except:
+        except Exception as e:
+            print(e)
             print("failed new body")
         try:
             new_uuid_ent = requests.post(call_url,json=new_body,headers=headers)
-        except:
-            print("failed new uuid ent")
+        except Exception as e:
+            print(e)
         print(str(new_body))
         print(new_uuid_ent.text)
         print("-"*20)

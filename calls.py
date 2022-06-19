@@ -45,7 +45,7 @@ def add_dialog(uuid: str, body: dict, auth_data: dict, cms: str):
     if(uuid_ent.status_code == 500 or uuid_ent.status_code == "500"):
         print("oooooo")
         try:
-            new_body = {str(key): str(value) for key, value in body.items()}
+            new_body = [{str(key): str(value) for key, value in item} for item in body.item()]
         except Exception as e:
             print(e)
             print("failed new body")

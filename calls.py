@@ -42,23 +42,21 @@ def add_dialog(uuid: str, body: dict, auth_data: dict, cms: str):
         print(uuid_ent)
         print(uuid_ent.text)
         print(uuid_ent.status_code == 500)
-        return uuid_ent.status_code
     except Exception as e:
-        uuid_ent = 2
-        return uuid_ent
+        uuid_ent = 0
         print(e)
         
-    # if(uuid_ent == 0 or uuid_ent.status_code == 500 or uuid_ent.status_code == "500"):
-    #     new_body = [{str(key): str(value) for key, value in item.items()} for item in body]
-    #     new_uuid_ent = requests.post(call_url,json=new_body,headers=headers)
-    #     print("-"*20)
-    #     print("Call failed, sending request with new body")
-    #     print(str(new_body))
-    #     print(new_uuid_ent.text)
-    #     print("-"*20)
-    #     return new_uuid_ent.status_code
+    if(uuid_ent == 0 or uuid_ent.status_code == 500 or uuid_ent.status_code == "500"):
+        new_body = [{str(key): str(value) for key, value in item.items()} for item in body]
+        new_uuid_ent = requests.post(call_url,json=new_body,headers=headers)
+        print("-"*20)
+        print("Call failed, sending request with new body")
+        print(str(new_body))
+        print(new_uuid_ent.text)
+        print("-"*20)
+        return new_uuid_ent.status_code
     
-    
+    return uuid_ent.status_code
 
 
 def refresh_token(username: str, password: str, auth_data: dict, cms: str):
